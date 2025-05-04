@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Abdulrahman-Bugis/Library-Management-System/static/css/main.801f0f4c.css",
-    "main.js": "/Abdulrahman-Bugis/Library-Management-System/static/js/main.dffedc8a.js",
-    "index.html": "/Abdulrahman-Bugis/Library-Management-System/index.html",
-    "main.801f0f4c.css.map": "/Abdulrahman-Bugis/Library-Management-System/static/css/main.801f0f4c.css.map",
-    "main.dffedc8a.js.map": "/Abdulrahman-Bugis/Library-Management-System/static/js/main.dffedc8a.js.map"
+    "main.css": "/Library-Management-System/static/css/main.801f0f4c.css",
+    "main.js": "/Library-Management-System/static/js/main.8e0312f0.js",
+    "index.html": "/Library-Management-System/index.html",
+    "main.801f0f4c.css.map": "/Library-Management-System/static/css/main.801f0f4c.css.map",
+    "main.8e0312f0.js.map": "/Library-Management-System/static/js/main.8e0312f0.js.map"
   },
   "entrypoints": [
     "static/css/main.801f0f4c.css",
-    "static/js/main.dffedc8a.js"
+    "static/js/main.8e0312f0.js"
   ]
 }
