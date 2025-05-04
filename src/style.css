@@ -1,0 +1,134 @@
+/* General layout */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f7fa;
+  color: #333;
+}
+
+h1, h2, h3 {
+  color: #222;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 30px;
+}
+
+/* Dashboard Container */
+div {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Section styling */
+section {
+  margin: 30px 0;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Lists */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background-color: #f9f9f9;
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Status label */
+.status {
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.status.available {
+  color: green;
+}
+
+.status.borrowed {
+  color: red;
+}
+
+/* Button group layout */
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Buttons */
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.95em;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Form styles */
+.add-book-form input {
+  margin: 10px 5px 10px 0;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.add-book-form button {
+  margin-right: 10px;
+}
+
+/* Logout button */
+button.logout {
+  float: right;
+  margin-bottom: 20px;
+  background-color: #dc3545;
+}
+
+button.logout:hover {
+  background-color: #b02a37;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .button-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  li {
+    align-items: stretch;
+  }
+}
