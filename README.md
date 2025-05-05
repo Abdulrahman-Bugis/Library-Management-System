@@ -1,70 +1,36 @@
-# Getting Started with Create React App
+# 📚 Library Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A simple, interactive React-based web application for managing a library's book collection. Users can add, view, edit, and delete books through an intuitive interface.
 
-## Available Scripts
+## 🌐 Live Demo
 
-In the project directory, you can run:
+[Visit the App](https://abdulrahman-bugis.github.io/Library-Management-System/)
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## ✨ Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Add new books with title, author, genre.
+- View a list of all books in a table format.
+- Edit book details directly from the list.
+- Delete books from the library.
+- Responsive and user-friendly interface.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🛠 Technologies Used
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- [React](https://reactjs.org/)
+- [React Router DOM](https://reactrouter.com/)
+- HTML5, CSS3, and JavaScript
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![Screenshot_2025-05-05_030704](https://github.com/user-attachments/assets/04026ec2-ecb2-4c54-8871-2aba52aec492)
+![Screenshot_2025-05-05_030714](https://github.com/user-attachments/assets/5efb599f-418d-45ce-b915-f664d32dc9d6)
+![Screenshot_2025-05-05_030723](https://github.com/user-attachments/assets/3616af76-cfea-4bd4-b04a-b038735d0a07)
+![Screenshot_2025-05-05_030747](https://github.com/user-attachments/assets/425c257f-f7e2-4ede-af92-61a539cc156f)
+![Screenshot_2025-05-05_030818](https://github.com/user-attachments/assets/86be7679-84d7-445d-8aaa-0f52a6a5d405)
