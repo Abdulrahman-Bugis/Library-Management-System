@@ -6,7 +6,6 @@ import { signOut } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
 import '../style.css';
 
-
 function AdminDashboard() {
   const navigate = useNavigate();
   const [books, setBooks] = useState([]);
@@ -83,7 +82,7 @@ function AdminDashboard() {
       });
       setNewBook({ title: '', author: '', genre: '' });
       setIsAdding(false);
-      fetchBooks();
+      await fetchBooks();
       alert('Book added successfully!');
     } catch (error) {
       console.error('Error adding book:', error);
@@ -92,32 +91,60 @@ function AdminDashboard() {
 
   const handleDeleteBook = async (bookId) => {
     try {
+      // Check if the book is borrowed
+      const borrowedBooksSnapshot = await getDocs(collection(db, 'borrowedBooks'));
+      const isBorrowed = borrowedBooksSnapshot.docs.some(
+        (docSnap) => docSnap.data().bookId === bookId
+      );
+  
+      if (isBorrowed) {
+        alert('Cannot delete a borrowed book. Please wait until it is returned.');
+        return;
+      }
+  
+      // Proceed with deletion
       await deleteDoc(doc(db, 'books', bookId));
       fetchBooks();
     } catch (error) {
       console.error('Error deleting book:', error);
     }
   };
+  
+  
 
   const handleBanCustomer = async (customerId, isBanned) => {
     try {
+      const customer = customers.find((c) => c.id === customerId);
+      if (!customer) {
+        alert('Customer not found.');
+        return;
+      }
+  
+      // Check if the customer has borrowed books
+      const borrowedSnapshot = await getDocs(collection(db, 'borrowedBooks'));
+      const hasBorrowed = borrowedSnapshot.docs.some(
+        (docSnap) => docSnap.data().userEmail === customer.email
+      );
+  
+      if (hasBorrowed) {
+        alert('Cannot ban a customer who has borrowed books. Please return books first.');
+        return;
+      }
+  
+      // Ban or unban the customer
       await updateDoc(doc(db, 'customers', customerId), {
         banned: !isBanned,
       });
-      fetchCustomers();
+  
+      await fetchCustomers();
+      alert(`Customer ${isBanned ? 'unbanned' : 'banned'} successfully.`);
     } catch (error) {
       console.error('Error updating customer status:', error);
     }
   };
+  
 
-  const handleRemoveCustomer = async (customerId) => {
-    try {
-      await deleteDoc(doc(db, 'customers', customerId));
-      fetchCustomers();
-    } catch (error) {
-      console.error('Error removing customer:', error);
-    }
-  };
+  
 
   const handleLogout = async () => {
     try {
@@ -192,7 +219,6 @@ function AdminDashboard() {
               <button onClick={() => handleBanCustomer(customer.id, customer.banned)}>
                 {customer.banned ? 'Unban' : 'Ban'}
               </button>
-              <button onClick={() => handleRemoveCustomer(customer.id)}>Remove</button>
             </li>
           ))}
         </ul>
