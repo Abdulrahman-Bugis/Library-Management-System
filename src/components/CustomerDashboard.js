@@ -1,35 +1,72 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
-import '../style.css';
 import {
   collection,
   getDocs,
   addDoc,
+  updateDoc,
   deleteDoc,
   doc,
-  updateDoc,
   Timestamp,
+  getDoc,
+  setDoc
 } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
+import '../style.css';
 
 function CustomerDashboard() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
   const [books, setBooks] = useState([]);
   const [borrowedBooks, setBorrowedBooks] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (!user) {
         navigate('/login');
-      } else {
-        fetchBooks();
-        fetchBorrowedBooks();
+        return;
+      }
+  
+      try {
+        const customerRef = doc(db, 'customers', user.uid);
+        const customerSnap = await getDoc(customerRef);
+  
+        if (customerSnap.exists()) {
+          const customerData = customerSnap.data();
+  
+          if (customerData.banned) {
+            // Delay logout to allow alert to appear
+            setTimeout(() => {
+              alert('Your account has been banned.');
+              signOut(auth).then(() => navigate('/login'));
+            }, 100); // Slight delay for alert to render
+            return;
+          }
+        } else {
+          // If no customer document exists
+          setTimeout(() => {
+            alert('Account not found.');
+            signOut(auth).then(() => navigate('/login'));
+          }, 100);
+          return;
+        }
+  
+        // Passed ban check
+        setUser(user);
+        await fetchBooks();
+        await fetchBorrowedBooks(user.email);
+  
+      } catch (error) {
+        console.error('Error during ban check:', error);
       }
     });
-
+  
     return () => unsubscribe();
   }, [navigate]);
+  
+  
+  
 
   const fetchBooks = async () => {
     try {
@@ -44,67 +81,54 @@ function CustomerDashboard() {
     }
   };
 
-  const fetchBorrowedBooks = async () => {
+  const fetchBorrowedBooks = async (email) => {
     try {
-      const snapshot = await getDocs(collection(db, 'borrowedBooks'));
-      const userEmail = auth.currentUser?.email;
-      const borrowedList = snapshot.docs
-        .map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
-        .filter((entry) => entry.userEmail === userEmail);
-      setBorrowedBooks(borrowedList);
+      const borrowedBooksSnapshot = await getDocs(collection(db, 'borrowedBooks'));
+      const userBooks = borrowedBooksSnapshot.docs
+        .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .filter((book) => book.userEmail === email);
+      setBorrowedBooks(userBooks);
     } catch (error) {
       console.error('Error fetching borrowed books:', error);
     }
   };
 
-  const getBookIdByTitle = (title) => {
-    const book = books.find((b) => b.title === title);
-    return book ? book.id : null;
-  };
-
-  const handleBorrowBook = async (bookId, title) => {
-    const bookRef = doc(db, 'books', bookId);
+  const handleBorrowBook = async (book) => {
+    if (!user) return;
 
     try {
-      await updateDoc(bookRef, { available: false });
-
-      const borrowedDate = Timestamp.fromDate(new Date());
       await addDoc(collection(db, 'borrowedBooks'), {
-        bookTitle: title,
-        userEmail: auth.currentUser.email,
-        borrowedDate,
+        userEmail: user.email,
+        bookTitle: book.title,
+        borrowedDate: Timestamp.now(),
+        bookId: book.id,
       });
 
-      fetchBooks();
-      fetchBorrowedBooks();
-      alert('Book borrowed successfully!');
+      await updateDoc(doc(db, 'books', book.id), {
+        available: false,
+      });
+
+      await fetchBooks();
+      await fetchBorrowedBooks(user.email);
     } catch (error) {
       console.error('Error borrowing book:', error);
     }
   };
 
-  const handleReturnBook = async (borrowedBookId, bookId) => {
-    if (!bookId) {
-      alert('Could not find the book ID.');
-      return;
-    }
-
+  const handleReturnBook = async (borrowedBook) => {
     try {
-      const borrowedRef = doc(db, 'borrowedBooks', borrowedBookId);
-      const bookRef = doc(db, 'books', bookId);
+      await deleteDoc(doc(db, 'borrowedBooks', borrowedBook.id));
 
-      await deleteDoc(borrowedRef);
-      await updateDoc(bookRef, { available: true });
+      if (borrowedBook.bookId) {
+        await updateDoc(doc(db, 'books', borrowedBook.bookId), {
+          available: true,
+        });
+      }
 
-      fetchBooks();
-      fetchBorrowedBooks();
-      alert('Book returned successfully!');
+      await fetchBooks();
+      await fetchBorrowedBooks(user.email);
     } catch (error) {
       console.error('Error returning book:', error);
-      alert('Failed to return book.');
     }
   };
 
@@ -113,12 +137,8 @@ function CustomerDashboard() {
       await signOut(auth);
       navigate('/login');
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error('Error signing out:', error);
     }
-  };
-
-  const formatDate = (timestamp) => {
-    return timestamp?.toDate().toLocaleDateString() || '';
   };
 
   return (
@@ -129,36 +149,26 @@ function CustomerDashboard() {
       <section>
         <h2>Available Books</h2>
         <ul>
-          {books.map((book) => (
-            <li key={book.id}>
-              {book.title} by {book.author} ({book.genre}) -{' '}
-              {book.available ? 'Available' : 'Borrowed'}
-              {book.available && (
-                <button onClick={() => handleBorrowBook(book.id, book.title)}>
-                  Borrow
-                </button>
-              )}
-            </li>
-          ))}
+          {books
+            .filter((book) => book.available)
+            .map((book) => (
+              <li key={book.id}>
+                {book.title} by {book.author} ({book.genre})
+                <button onClick={() => handleBorrowBook(book)}>Borrow</button>
+              </li>
+            ))}
         </ul>
       </section>
 
       <section>
-        <h2>Your Borrowed Books</h2>
+        <h2>My Borrowed Books</h2>
         <ul>
-          {borrowedBooks.map((borrowedBook) => (
-            <li key={borrowedBook.id}>
-              {borrowedBook.bookTitle} - Borrowed on: {formatDate(borrowedBook.borrowedDate)}
-              <button
-                onClick={() =>
-                  handleReturnBook(
-                    borrowedBook.id,
-                    getBookIdByTitle(borrowedBook.bookTitle)
-                  )
-                }
-              >
-                Return Book
-              </button>
+          {borrowedBooks.map((borrowed) => (
+            <li key={borrowed.id}>
+              {borrowed.bookTitle} <br />
+              Borrowed Date:{' '}
+              {borrowed.borrowedDate?.toDate().toLocaleDateString()} <br />
+              <button onClick={() => handleReturnBook(borrowed)}>Return</button>
             </li>
           ))}
         </ul>
